@@ -140,3 +140,45 @@ WHERE name_executor NOT LIKE '% %';
 SELECT treck_name 
 FROM track 
 WHERE treck_name ILIKE '%my%' OR treck_name ILIKE '%мой%';
+
+-- Задание 3 SELECT-запросы --
+
+-- 1. Количество исполнителей в каждом жанре
+SELECT g.name_genres AS "Жанр", COUNT(pg.performer_id) AS "Количество исполнителей"
+FROM musical_genres g
+JOIN performers_genres pg ON g.musikal_genres_id = pg.genre_id
+GROUP BY g.name_genres
+ORDER BY COUNT(pg.performer_id) DESC;
+
+-- 2. Количество треков, вошедших в альбомы 2019–2020 годов
+SELECT COUNT(t.treck_id) AS "Количество треков"
+FROM track t
+JOIN albums a ON t.alboms_id = a.albums_id
+WHERE a.year_release BETWEEN 2019 AND 2020;
+
+-- 3. Средняя продолжительность треков по каждому альбому
+SELECT a.alboms_name AS "Альбом", AVG(t.time) AS "Средняя продолжительность"
+FROM track t
+JOIN albums a ON t.alboms_id = a.albums_id
+GROUP BY a.alboms_name
+ORDER BY AVG(t.time) DESC;
+
+-- 4. Все исполнители, которые не выпустили альбомы в 2020 году
+SELECT p.name_executor AS "Исполнитель"
+FROM performers p
+WHERE p.executor_id NOT IN (
+    SELECT pa.performer_id
+    FROM performers_albums pa
+    JOIN albums a ON pa.album_id = a.albums_id
+    WHERE a.year_release = 2020
+);
+
+-- 5. Названия сборников, в которых присутствует конкретный исполнитель (выберем 'Zefirych')
+SELECT DISTINCT c.compilation_name AS "Сборник"
+FROM compilations c
+JOIN compilation_tracks ct ON c.compilation_id = ct.compilation_id
+JOIN track t ON ct.track_id = t.treck_id
+JOIN albums a ON t.alboms_id = a.albums_id
+JOIN performers_albums pa ON a.albums_id = pa.album_id
+JOIN performers p ON pa.performer_id = p.executor_id
+WHERE p.name_executor = 'Zefirych';
