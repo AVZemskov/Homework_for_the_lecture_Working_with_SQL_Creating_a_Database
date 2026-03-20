@@ -139,7 +139,14 @@ WHERE name_executor NOT LIKE '% %';
 -- 5. Название треков, которые содержат слово "мой" или "my"
 SELECT treck_name 
 FROM track 
-WHERE treck_name ILIKE '%my%' OR treck_name ILIKE '%мой%';
+WHERE treck_name ILIKE 'my'                   
+   OR treck_name ILIKE 'my %'                 
+   OR treck_name ILIKE '% my'                 
+   OR treck_name ILIKE '% my %'                
+   OR treck_name ILIKE 'мой'                 
+   OR treck_name ILIKE 'мой %'                 
+   OR treck_name ILIKE '% мой'                
+   OR treck_name ILIKE '% мой %';
 
 -- Задание 3 SELECT-запросы --
 
